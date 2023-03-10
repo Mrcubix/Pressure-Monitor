@@ -1,0 +1,6 @@
+[submodule ".modules/Proxy-API"]
+	path = .modules/Proxy-API
+	url = git@github.com:Mrcubix/Gess1t-s-Proxy-API.git
+[submodule ".modules/OTD.EnhancedOutputMode"]
+	path = .modules/OTD.EnhancedOutputMode
+	url = git@github.com:Mrcubix/OTD.EnhancedOutputMode.git

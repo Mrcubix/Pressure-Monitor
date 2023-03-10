@@ -1,0 +1,32 @@
+.TabletAreaSection>svg {
+    position: absolute;
+    left: 0;
+    top: 0
+}
+
+.FullAreaContainer {
+    background-image: url("../img/WYSI.gif");
+    background-size: cover
+}
+
+#FullArea {
+    /*fill: white;*/
+    fill: transparent;
+    stroke:rgb(0,0,0);
+    stroke-width:1px
+}
+
+#DefinedArea {
+    /* Color of the present aera */
+    fill: blue
+}
+
+#TargetArea {
+    /* Color of the present aera */
+    fill: red
+}
+
+#PenPosition {
+    fill: black
+}
+

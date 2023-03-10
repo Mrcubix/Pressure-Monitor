@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Pressure_monitor.Extractor</RootNamespace>
+    <NoWarn>NETSDK1138</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTabletDriver.Plugin" Version="0.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="./res/dependencies.zip" />
+  </ItemGroup>
+</Project>
