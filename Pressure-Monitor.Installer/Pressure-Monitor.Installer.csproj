@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Pressure_monitor.Extractor</RootNamespace>
     <NoWarn>NETSDK1138</NoWarn>
   </PropertyGroup>
 

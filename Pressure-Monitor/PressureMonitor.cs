@@ -11,7 +11,7 @@ using OTD.EnhancedOutputMode.Lib.Interface;
 using Proxy_API.Lib.Overlay.Extraction;
 using Proxy_API.Lib.Pipes;
 
-namespace Pressure_monitor
+namespace Pressure_Monitor
 {   
     [PluginName("Pressure Monitor")]
     public class PressureMonitor : IFilter, IGateFilter, IDisposable
@@ -20,7 +20,7 @@ namespace Pressure_monitor
         private Server server;
         private EventHandler<uint> pressureChanged;
         private CircularBuffer<uint> pressureMeasurementsBuffer;
-        private string zipEmbeddedResource = "Pressure-monitor...res.overlay.zip";
+        private string zipEmbeddedResource = "Pressure-Monitor...res.overlay.zip";
         private int lastPressureMeasurement = Environment.TickCount;
 
         public PressureMonitor()

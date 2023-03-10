@@ -1,5 +1,5 @@
-tar -acf ./Pressure-monitor/res/overlay.zip --directory=./Pressure-monitor/res/overlay/ *
-dotnet publish Pressure-monitor -c Release -o build
-tar -acf ./Pressure-monitor.Extraction/res/dependencies.zip -T ./Pressure-monitor/res/dependencies.txt --directory="./build"
+tar -acf ./Pressure-Monitor/res/overlay.zip --directory=./Pressure-Monitor/res/overlay/ *
+dotnet publish Pressure-Monitor -c Release -o build
+tar -acf ./Pressure-Monitor.Installer/res/dependencies.zip -T ./Pressure-Monitor/res/dependencies.txt --directory="./build"
 rm -rf ./build/*
-dotnet publish Pressure-monitor.Extraction -c Release -o build
+dotnet publish Pressure-Monitor.Installer -c Release -o build

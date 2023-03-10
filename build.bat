@@ -1,8 +1,8 @@
 @echo off
 
-tar -acf ./Pressure-monitor/res/overlay.zip --directory=./Pressure-monitor/res/overlay/ *
-dotnet publish Pressure-monitor -c Release -o build
-echo "built Pressure-monitor."
+tar -acf ./Pressure-Monitor/res/overlay.zip --directory=./Pressure-Monitor/res/overlay/ *
+dotnet publish Pressure-Monitor -c Release -o build
+echo "built Pressure-Monitor"
 
 cd build
 
@@ -25,10 +25,10 @@ move System.Diagnostics.DiagnosticSource.dll dependencies
 move System.IO.Pipelines.dll dependencies
 
 
-tar -acf ../Pressure-monitor.Extraction/res/dependencies.zip --directory=./dependencies/ *
+tar -acf ../Pressure-Monitor.Installer/res/dependencies.zip --directory=./dependencies/ *
 
 cd ..
 del /S /Q build
 
-dotnet publish Pressure-monitor.Extraction -c Release -o build
-echo "built Pressure-monitor.Extraction."
+dotnet publish Pressure-Monitor.Installer -c Release -o build
+echo "built Pressure-Monitor.Installer"
