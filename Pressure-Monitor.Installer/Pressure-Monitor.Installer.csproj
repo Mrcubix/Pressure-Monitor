@@ -3,10 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <NoWarn>NETSDK1138</NoWarn>
+    <TrimMode>copyused</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTabletDriver.Plugin" Version="0.5.2" />
+    <ProjectReference Include="../.modules/Proxy-API/Proxy-API.Lib/Proxy-API.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

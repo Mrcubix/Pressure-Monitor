@@ -10,6 +10,7 @@ using OpenTabletDriver.Plugin.Tablet;
 using OTD.EnhancedOutputMode.Lib.Interface;
 using Proxy_API.Lib.Overlay.Extraction;
 using Proxy_API.Lib.Pipes;
+using ScottPlot.Statistics.Interpolation;
 
 namespace Pressure_Monitor
 {   
@@ -19,7 +20,8 @@ namespace Pressure_Monitor
         private Client client = new Client("API");
         private Server server;
         private EventHandler<uint> pressureChanged;
-        private CircularBuffer<uint> pressureMeasurementsBuffer;
+        private CircularBuffer<double> pressureMeasurementsBuffer;
+        private double[] timeStamps;
         private string zipEmbeddedResource = "Pressure-Monitor...res.overlay.zip";
         private int lastPressureMeasurement = Environment.TickCount;
 
@@ -39,14 +41,32 @@ namespace Pressure_Monitor
         public bool Pass(IDeviceReport report, ref ITabletReport tabletreport)
         {
             if (pressureMeasurementsBuffer == null)
-                pressureMeasurementsBuffer = new CircularBuffer<uint>(NumberOfPoints);
+            {
+                pressureMeasurementsBuffer = new CircularBuffer<double>(NumberOfPoints);
 
-            Log.Write("PressureMonitor", $"Time since last pressure measurement: {Environment.TickCount - lastPressureMeasurement}", LogLevel.Debug);
+                for (int i = 0; i < NumberOfPoints; i++)
+                {
+                    pressureMeasurementsBuffer.PushFront(0);
+                }
+            }
+
+            if (timeStamps == null)
+            {
+                timeStamps = new double[NumberOfPoints];
+
+                for (int i = 0; i < NumberOfPoints; i++)
+                {
+                    timeStamps[i] = i * PressureMeasurementInterval;
+                }
+            }
 
             if (Environment.TickCount - lastPressureMeasurement > PressureMeasurementInterval)
             {
                 if (tabletreport is ITabletReport tabletReport)
+                {
                     pressureChanged?.Invoke(this, tabletreport.Pressure);
+                    lastPressureMeasurement = Environment.TickCount;
+                }
             }
 
             return true;
@@ -82,7 +102,7 @@ namespace Pressure_Monitor
 
             try
             {
-                return OverlayExtractor.TryExtractingEmbeddedResource(Assembly.GetExecutingAssembly(), zipEmbeddedResource, $"{OverlayExtractor.overlayDirectory}/PressureMonitor");
+                return OverlayExtractor.TryExtractingEmbeddedResource(Assembly.GetExecutingAssembly(), zipEmbeddedResource, $"{OverlayExtractor.OverlayDirectory}/PressureMonitor");
             }
             catch (Exception e)
             {
@@ -104,13 +124,18 @@ namespace Pressure_Monitor
         public void OnPressureChange(object? sender, uint pressure)
         {
             pressureMeasurementsBuffer.PushFront(pressure);
-            _ = SendPointsAsync();
+            (double[] x, double[] y) = Cubic.InterpolateXY(timeStamps, pressureMeasurementsBuffer.ToArray(), NumberOfPoints + (NumberOfPoints * Smoothness));
+
+            _ = SendPointsAsync(x, y);
         }
 
-        public async Task SendPointsAsync()
+        public async Task SendPointsAsync(double[] x, double[] y)
         {
-            string serializedBuffer = System.Text.Json.JsonSerializer.Serialize(pressureMeasurementsBuffer.ToArray());
-            await client.Rpc.NotifyAsync("SendDataAsync", "PressureMonitor", "points", serializedBuffer);
+            string serializedX = System.Text.Json.JsonSerializer.Serialize(x);
+            string serializedY = System.Text.Json.JsonSerializer.Serialize(y);
+
+            await client.Rpc.NotifyAsync("SendDataAsync", "PressureMonitor", "X", serializedX);
+            await client.Rpc.NotifyAsync("SendDataAsync", "PressureMonitor", "Y", serializedY);
         }
 
         public async Task SendMaxPressureAsync()
@@ -123,12 +148,32 @@ namespace Pressure_Monitor
 
         [Property("Number of points"),
          DefaultPropertyValue(50),
+         Unit("points"),
          ToolTip("The number of points that will be drawn on the graph")
         ]
         public int NumberOfPoints { set; get; }
 
+        [Property("Smoothness"),
+         DefaultPropertyValue(1000),
+         Unit("%"),
+         ToolTip("The number of points that will be drawn on the graph")
+        ]
+        public int Smoothness
+        {
+            set
+            {
+                _smoothness = value / 100;
+            }
+            get
+            {
+                return (int)(_smoothness * 100);
+            }
+        }
+        private double _smoothness = 1000;
+
         [Property("Pressure Measurement Interval"),
          DefaultPropertyValue(100),
+         Unit("ms"),
          ToolTip("The interval at which the pressure will be measured in milliseconds")
         ]
         public int PressureMeasurementInterval { set; get; }

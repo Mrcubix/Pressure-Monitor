@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <!--<PackageReference Include="OpenTabletDriver.Plugin" Version="0.5.2" />-->
+    <PackageReference Include="ScottPlot" Version="4.1.61" />
     <PackageReference Include="StreamJsonRpc" Version="2.8.21" />
     <PackageReference Include="CircularBuffer" Version="1.3.0" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 **/bin
 **/obj
 .vscode
-**/.zip
-**/.dll
+**/*.zip
+**/*.dll
 build
